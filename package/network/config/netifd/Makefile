@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netifd
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/netifd.git
-PKG_SOURCE_DATE:=2018-04-20
-PKG_SOURCE_VERSION:=b3dca7b64d3646a91cc4520652f2e2e144478143
-PKG_MIRROR_HASH:=2f640ab588e9de1c2f469300a6d4b0dacc7b8319ed9d547b657a880b2821903c
+PKG_SOURCE_DATE:=2018-10-02
+PKG_SOURCE_VERSION:=a117e414d8acd5dd27ba9ac30bc462ba4ae6587e
+PKG_MIRROR_HASH:=55cd6055f3dc2c30ed2a482d0deedd3de7a30ef65e3356118e27cb57f517ea6a
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 
 PKG_LICENSE:=GPL-2.0
@@ -27,7 +27,10 @@ endef
 
 TARGET_CFLAGS += \
 	-I$(STAGING_DIR)/usr/include/libnl-tiny \
-	-I$(STAGING_DIR)/usr/include
+	-I$(STAGING_DIR)/usr/include \
+	-flto
+
+TARGET_LDFLAGS += -flto -fuse-linker-plugin
 
 CMAKE_OPTIONS += \
 	-DLIBNL_LIBS=-lnl-tiny \
