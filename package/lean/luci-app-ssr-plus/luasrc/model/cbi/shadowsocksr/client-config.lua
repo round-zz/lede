@@ -121,9 +121,6 @@ o.template = "shadowsocksr/ssrurl"
 o.value =sid
 o:depends("type", "ssr")
 
-o = s:option(Value, "alias", translate("Alias(optional)"))
-
-
 o = s:option(ListValue, "type", translate("Server Node Type"))
 o:value("ssr", translate("ShadowsocksR"))
 if nixio.fs.access("/usr/bin/ss-redir") then
@@ -134,7 +131,7 @@ o:value("v2ray", translate("V2Ray"))
 end
 o.description = translate("Using incorrect encryption mothod may causes service fail to start")
 
-
+o = s:option(Value, "alias", translate("Alias(optional)"))
 
 o = s:option(Value, "server", translate("Server Address"))
 o.datatype = "host"
@@ -151,23 +148,23 @@ o.rmempty = false
 
 o = s:option(Value, "password", translate("Password"))
 o.password = true
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "ssr")
 o:depends("type", "ss")
 
 o = s:option(ListValue, "encrypt_method", translate("Encrypt Method"))
 for _, v in ipairs(encrypt_methods) do o:value(v) end
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "ssr")
 
 o = s:option(ListValue, "encrypt_method_ss", translate("Encrypt Method"))
 for _, v in ipairs(encrypt_methods_ss) do o:value(v) end
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "ss")
 
 o = s:option(ListValue, "protocol", translate("Protocol"))
 for _, v in ipairs(protocol) do o:value(v) end
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "ssr")
 
 o = s:option(Value, "protocol_param", translate("Protocol param(optional)"))
@@ -175,7 +172,7 @@ o:depends("type", "ssr")
 
 o = s:option(ListValue, "obfs", translate("Obfs"))
 for _, v in ipairs(obfs) do o:value(v) end
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "ssr")
 
 o = s:option(Value, "obfs_param", translate("Obfs param(optional)"))
@@ -185,19 +182,19 @@ o:depends("type", "ssr")
 o = s:option(Value, "alter_id", translate("AlterId"))
 o.datatype = "port"
 o.default = 16
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "v2ray")
 
 -- VmessId
-o = s:option(Value, "vmess_id", translate("VmessId"))
-o.rmempty = false
+o = s:option(Value, "vmess_id", translate("VmessId (UUID)"))
+o.rmempty = true
 o.default = uuid
 o:depends("type", "v2ray")
 
 -- 加密方式
 o = s:option(ListValue, "security", translate("Encrypt Method"))
 for _, v in ipairs(securitys) do o:value(v, v:upper()) end
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "v2ray")
 
 -- 传输协议
@@ -206,7 +203,7 @@ o:value("tcp", "TCP")
 o:value("kcp", "mKCP")
 o:value("ws", "WebSocket")
 o:value("h2", "HTTP/2")
-o.rmempty = false
+o.rmempty = true
 o:depends("type", "v2ray")
 
 -- [[ TCP部分 ]]--
@@ -304,18 +301,25 @@ o = s:option(Flag, "congestion", translate("Congestion"))
 o:depends("transport", "kcp")
 o.rmempty = true
 
+-- [[ allowInsecure ]]--
+o = s:option(Flag, "insecure", translate("allowInsecure"))
+o.rmempty = true
+o:depends("type", "v2ray")
+
 -- [[ TLS ]]--
 o = s:option(Flag, "tls", translate("TLS"))
-o.rmempty = false
+o.rmempty = true
+o.default = "0"
 o:depends("type", "v2ray")
 
 -- [[ Mux ]]--
 o = s:option(Flag, "mux", translate("Mux"))
-o.rmempty = false
+o.rmempty = true
+o.default = "0"
 o:depends("type", "v2ray")
 
 o = s:option(Flag, "fast_open", translate("TCP Fast Open"))
-o.rmempty = false
+o.rmempty = true
 o.default = "0"
 o:depends("type", "ssr")
 o:depends("type", "ss")
@@ -332,7 +336,8 @@ o.rmempty = false
 if nixio.fs.access("/usr/bin/ssr-kcptun") then
 
 kcp_enable = s:option(Flag, "kcp_enable", translate("KcpTun Enable"), translate("bin:/usr/bin/ssr-kcptun"))
-kcp_enable.rmempty = false
+kcp_enable.rmempty = true
+kcp_enable.default = "0"
 kcp_enable:depends("type", "ssr")
 kcp_enable:depends("type", "ss")
 

@@ -15,9 +15,9 @@ m:section(SimpleSection).template  = "shadowsocksr/status"
 local server_table = {}
 uci:foreach(shadowsocksr, "servers", function(s)
 	if s.alias then
-		server_table[s[".name"]] = s.alias
+		server_table[s[".name"]] = "[%s]:%s" %{string.upper(s.type), s.alias}
 	elseif s.server and s.server_port then
-		server_table[s[".name"]] = "%s:%s" %{s.server, s.server_port}
+		server_table[s[".name"]] = "[%s]:%s:%s" %{string.upper(s.type), s.server, s.server_port}
 	end
 end)
 
@@ -39,6 +39,7 @@ for k, v in pairs(server_table) do o:value(k, v) end
 o = s:option(ListValue, "run_mode", translate("Running Mode"))
 o:value("gfw", translate("GFW List Mode"))
 o:value("router", translate("IP Route Mode"))
+o:value("oversea", translate("Oversea Mode"))
 o.default = gfw
 
 o = s:option(ListValue, "pdnsd_enable", translate("Resolve Dns Mode"))
@@ -58,6 +59,8 @@ o:value("4.2.2.2:53", translate("Level 3 Public DNS (4.2.2.2)"))
 o:value("4.2.2.3:53", translate("Level 3 Public DNS (4.2.2.3)"))
 o:value("4.2.2.4:53", translate("Level 3 Public DNS (4.2.2.4)"))
 o:value("1.1.1.1:53", translate("Cloudflare DNS (1.1.1.1)"))
+o:value("114.114.114.114:53", translate("Oversea Mode DNS-1 (114.114.114.114)"))
+o:value("114.114.115.115:53", translate("Oversea Mode DNS-2 (114.114.115.115)"))
 o:depends("pdnsd_enable", "1")
 
 return m
